@@ -2,16 +2,18 @@ plugins {
     id("cn.edu.sdu.qd.oj.judger.java-conventions")
 }
 
+var depBasePath = "/Users/rajeev/Desktop/judge_experiments/SDUOJ"
+
 dependencies {
     /* 1-st party dependency */
     implementation(project(":sduoj-judger-interface"))
-    implementation(files("/Users/rajeev/Desktop/judge_experiments/SDUOJ/sduoj-server/sduoj-common/sduoj-common-entity/build/libs/sduoj-common-entity-0.0.1-SNAPSHOT.jar"))
-    implementation(files("/Users/rajeev/Desktop/judge_experiments/SDUOJ/sduoj-server/sduoj-common/sduoj-common-util/build/libs/sduoj-common-util-0.0.1-SNAPSHOT.jar"))
+    implementation(files(depBasePath + "/sduoj-server/sduoj-common/sduoj-common-entity/build/libs/sduoj-common-entity-0.0.1-SNAPSHOT.jar"))
+    implementation(files(depBasePath + "/sduoj-server/sduoj-common/sduoj-common-util/build/libs/sduoj-common-util-0.0.1-SNAPSHOT.jar"))
 
     /* 2-nd party dependency */
-    implementation(files("/Users/rajeev/Desktop/judge_experiments/SDUOJ/sduoj-server/sduoj-problem/sduoj-problem-interface/build/libs/sduoj-problem-interface-0.0.1-SNAPSHOT.jar"))
-    implementation(files("/Users/rajeev/Desktop/judge_experiments/SDUOJ/sduoj-server/sduoj-submit/sduoj-submit-interface/build/libs/sduoj-submit-interface-0.0.1-SNAPSHOT.jar"))
-    implementation(files("/Users/rajeev/Desktop/judge_experiments/SDUOJ/sduoj-server/sduoj-filesys/sduoj-filesys-interface/build/libs/sduoj-filesys-interface-0.0.1-SNAPSHOT.jar"))
+    implementation(files(depBasePath + "/sduoj-server/sduoj-problem/sduoj-problem-interface/build/libs/sduoj-problem-interface-0.0.1-SNAPSHOT.jar"))
+    implementation(files(depBasePath + "/sduoj-server/sduoj-submit/sduoj-submit-interface/build/libs/sduoj-submit-interface-0.0.1-SNAPSHOT.jar"))
+    implementation(files(depBasePath + "/sduoj-server/sduoj-filesys/sduoj-filesys-interface/build/libs/sduoj-filesys-interface-0.0.1-SNAPSHOT.jar"))
 
     /* 3-rd party dependency */
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
