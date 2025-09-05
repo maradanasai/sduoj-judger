@@ -2,11 +2,13 @@ plugins {
     id("cn.edu.sdu.qd.oj.judger.java-conventions")
 }
 
+var depBasePath = "/Users/rajeev/Desktop/judge_experiments/SDUOJ"
+
 dependencies {
     /* 1-st party dependency */
 
     /* 2-nd party dependency */
-    api("cn.edu.sdu.qd.oj.submit:sduoj-submit-interface:${Versions.sduoj}")
+    api(files(depBasePath + "/sduoj-server/sduoj-submit/sduoj-submit-interface/build/libs/sduoj-submit-interface-0.0.1-SNAPSHOT.jar"))
 
     /* 3-rd party dependency */
     api("org.apache.commons:commons-lang3:${Versions.commonsLang3}")

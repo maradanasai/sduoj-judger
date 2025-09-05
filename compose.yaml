@@ -1,0 +1,13 @@
+name: sduoj-judger-local
+
+services:
+  sduoj-judger:
+    image: sduoj-judger:local
+    environment:
+      - RABBITMQ_HOST=host.docker.internal
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=admin
+      - SUBMIT_SERVICE_URL=host.docker.internal:19014
+      - PROBLEM_SERVICE_URL=host.docker.internal:19013
+      - FILESYS_SERVICE_URL=host.docker.internal:19012
+
