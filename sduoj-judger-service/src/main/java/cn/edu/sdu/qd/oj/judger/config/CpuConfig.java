@@ -29,21 +29,59 @@ public class CpuConfig {
     @Getter
     private static Set<Integer> cpuSet;
 
-    private static final String[] CPUSET_PATHS = new String[]{
+    // Path for cgroups v1
+    private static final String[] CPUSET_PATHS_V1 = new String[]{
             "/sys/fs/cgroup/cpuset/cpuset.cpus",
             "/sys/fs/cgroup/cpuset.cpus"
     };
 
+    // Path for cgroups v2
+    private static final String CPUSET_PATH_V2 = "/sys/fs/cgroup/cpuset.cpus.effective";
+
     public static void initialize() {
-        for (String cpuSetPath : CPUSET_PATHS) {
-            if (initialize(cpuSetPath)) {
+        if (isCgroupV2()) {
+            if (initializeV2()) {
                 return;
             }
+        } else {
+            for (String cpuSetPath : CPUSET_PATHS_V1) {
+                if (initialize(cpuSetPath)) {
+                    return;
+                }
+            }
         }
-        throw new RuntimeException("cpuset.cpus init failed");
+        throw new RuntimeException("cpuset init failed: no usable cpuset file found");
     }
 
-    public static boolean initialize(String cpuSetPath) {
+    private static boolean isCgroupV2() {
+        try {
+            String cgroupType = FileUtils.readFile("/proc/filesystems");
+            return cgroupType.contains("cgroup2");
+        } catch (SystemErrorException e) {
+            log.error("Failed to detect cgroup version", e);
+            return false;
+        }
+    }
+
+    private static boolean initializeV2() {
+        try {
+            log.info("Reading cpuset.cpus.effective from {}", CPUSET_PATH_V2);
+            String cpuSet = FileUtils.readFile(CPUSET_PATH_V2);
+            log.info("CpuConfig Read CpuSet (v2): {}", cpuSet);
+            CpuConfig.cpuSet = handleCpuSetString(cpuSet);
+            log.info("CpuConfig Initialize (v2): {}", CpuConfig.cpuSet);
+            return true;
+        } catch (SystemErrorException e) {
+            if (e.getCause() instanceof FileNotFoundException) {
+                log.warn("{} not found", CPUSET_PATH_V2);
+            } else {
+                log.error("Error reading {}", CPUSET_PATH_V2, e);
+            }
+        }
+        return false;
+    }
+
+    private static boolean initialize(String cpuSetPath) {
         try {
             log.info("Reading cpuset.cpus from {}", cpuSetPath);
             String cpuSet = FileUtils.readFile(cpuSetPath); // 读出来是形如 '0-1,3-5' 之类的串，需要处理
@@ -53,7 +91,9 @@ public class CpuConfig {
             return true;
         } catch (SystemErrorException e) {
             if (e.getCause() instanceof FileNotFoundException) {
-                log.warn("{} nou found", cpuSetPath);
+                log.warn("{} not found", cpuSetPath);
+            } else {
+                log.error("Error reading {}", cpuSetPath, e);
             }
         }
         return false;
