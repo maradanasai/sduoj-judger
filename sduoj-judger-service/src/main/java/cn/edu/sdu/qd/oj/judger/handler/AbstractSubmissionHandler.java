@@ -294,6 +294,7 @@ public abstract class AbstractSubmissionHandler {
                     localCheckpointManager.addCheckpoint(Long.valueOf(name.substring(0, name.indexOf("."))));
                 }
             } catch (Exception e) {
+                log.error("Error download checkpoints", e);
                 throw new SystemErrorException(String.format("Can not download checkpoints:\n%s", e));
             }
         }
